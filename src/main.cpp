@@ -14,17 +14,9 @@ struct tile {
         return Rectangle{(x - 1) * pixels, (y - 1) * pixels, width * pixels, height * pixels};
     };
 
-    Vector2 downColPos1() {
-        return Vector2{(x - width) * pixels, y * pixels};
-    }
-
-    Vector2 downColPos2() {
-        return Vector2{x * pixels, y * pixels};
-    }
-
     void Draw() {
         DrawRectangle((int) (x - 1) * pixels, (int) (y - 1) * pixels, (int) width * pixels, (int) height * pixels,
-                      WHITE);
+                      MAGENTA);
     }
 };
 
@@ -66,20 +58,26 @@ int main() {
         // ...
         if (IsKeyPressed(KEY_W)) {
                 player.y -= 1;
-        }
-        if (IsKeyPressed(KEY_A)) {
-            if (!CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
-                player.x -= 1;
-            }
-        }
-        if (IsKeyPressed(KEY_S)) {
-            if (!CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
                 player.y += 1;
             }
         }
-        if (IsKeyPressed(KEY_D)) {
-            if (!CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+        if (IsKeyPressed(KEY_A)) {
+            player.x -= 1;
+            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
                 player.x += 1;
+            }
+        }
+        if (IsKeyPressed(KEY_S)) {
+            player.y += 1;
+            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+                player.y -= 1;
+            }
+        }
+        if (IsKeyPressed(KEY_D)) {
+            player.x += 1;
+            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+                player.x -= 1;
             }
         }
         if (player.x > 30) {
@@ -95,13 +93,13 @@ int main() {
             player.y += 1;
         }
 
-
         BeginDrawing();
         // You can draw on the screen between BeginDrawing() and EndDrawing()
         // ...
         // ...
         ClearBackground(WHITE);
         DrawTexture(map, 0, 0, WHITE);
+        wall.Draw();
         player.Draw();
         EndDrawing();
     } // Main game loop end
