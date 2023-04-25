@@ -4,21 +4,75 @@
 
 #include "config.h"
 
-struct tile {
-    float x, y;
-    float height = 1.0;
-    float width = 1.0;
-    int pixels = 32;
+#include "tiles.h"
 
-    Rectangle GetRect() {
-        return Rectangle{(x - 1) * pixels, (y - 1) * pixels, width * pixels, height * pixels};
-    };
+int bigmap[600] = {37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396,
+                   396, 396, 396, 396, 396, 396, 396, 396, 396, 37,
+                   37, 37, 37, 37, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396, 396,
+                   396, 396, 396, 396, 396, 396, 396, 396, 396, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 396, 396, 396, 396, 396,
+                   396, 396, 396, 396, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 546, 546, 37, 37,
+                   37, 546, 546, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 546, 546, 546, 37,
+                   37, 546, 546, 546, 546, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 546, 546, 546, 37,
+                   37, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546,
+                   546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 37,
+                   37, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546,
+                   546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 37,
+                   37, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546,
+                   546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 37,
+                   37, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546,
+                   546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 37,
+                   520, 520, 520, 520, 520, 520, 520, 520, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546,
+                   546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 37,
+                   520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520,
+                   520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520,
+                   37, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520,
+                   520, 520, 520, 520, 520, 520, 520, 520, 520, 520, 520,
+                   37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+                   37, 37, 37, 37, 37, 37};
 
-    void Draw() {
-        DrawRectangle((int) (x - 1) * pixels, (int) (y - 1) * pixels, (int) width * pixels, (int) height * pixels,
-                      MAGENTA);
+int currentMin = 0;
+int currentMax = 30;
+
+Rectangle GetRect(tiles t) {
+    return Rectangle{(t.x - 1) * t.pixels, (t.y - 1) * t.pixels, t.width * t.pixels, t.height * t.pixels};
+}
+
+void Draw(tiles t) {
+    DrawRectangle((int) (t.x - 1) * t.pixels, (int) (t.y - 1) * t.pixels, (int) t.width * t.pixels,
+                  (int) t.height * t.pixels,
+                  MAGENTA);
+}
+
+void DrawMap(tiles t) {
+    for(int z = 0; z < 20; z++)
+    {
+        for (int i = currentMin; i < currentMax; i++) {
+            if (bigmap[i] == 396) {
+                DrawRectangle((i - currentMin) * t.pixels, z * t.pixels, t.width * t.pixels,
+                              t.height * t.pixels, BLUE);
+            }
+        }
+        currentMin += 30;
+        currentMax += 30;
     }
-};
+}
 
 
 int main() {
@@ -36,19 +90,23 @@ int main() {
     // ...
     // ...
     Texture2D map = LoadTexture("assets/graphics/test5.png");
+    currentMin = 0;
+    currentMax = 30;
 
-    tile player;
+
+    tiles player;
     player.x = 1;
     player.y = 1;
     player.height = 1;
     player.width = 1;
+    player.pixels = 32;
 
-    tile wall;
+    tiles wall;
     wall.x = 5;
     wall.y = 2;
-    wall.height = 2;
-    wall.width = 25;
-
+    wall.height = 1;
+    wall.width = 1;
+    wall.pixels = 32;
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -56,27 +114,31 @@ int main() {
         // Updates that are made by frame are coded here
         // ...
         // ...
+
+        currentMin = 0;
+        currentMax = 30;
+
         if (IsKeyPressed(KEY_W)) {
-                player.y -= 1;
-            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+            player.y -= 1;
+            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
                 player.y += 1;
             }
         }
         if (IsKeyPressed(KEY_A)) {
             player.x -= 1;
-            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
                 player.x += 1;
             }
         }
         if (IsKeyPressed(KEY_S)) {
             player.y += 1;
-            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
                 player.y -= 1;
             }
         }
         if (IsKeyPressed(KEY_D)) {
             player.x += 1;
-            if (CheckCollisionRecs(player.GetRect(), wall.GetRect())) {
+            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
                 player.x -= 1;
             }
         }
@@ -99,8 +161,9 @@ int main() {
         // ...
         ClearBackground(WHITE);
         DrawTexture(map, 0, 0, WHITE);
-        wall.Draw();
-        player.Draw();
+        //wall.Draw();
+        DrawMap(wall);
+        Draw(player);
         EndDrawing();
     } // Main game loop end
 
