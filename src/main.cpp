@@ -47,22 +47,19 @@ int bigmap[600] = {37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 3
                    37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
                    37, 37, 37, 37, 37, 37};
 
-int currentMin = 0;
-int currentMax = 30;
 
 Rectangle GetRect(tiles t) {
     return Rectangle{(t.x - 1) * t.pixels, (t.y - 1) * t.pixels, t.width * t.pixels, t.height * t.pixels};
 }
 
-void Draw(tiles t) {
+void DrawPlayer(tiles &t) {
     DrawRectangle((int) (t.x - 1) * t.pixels, (int) (t.y - 1) * t.pixels, (int) t.width * t.pixels,
                   (int) t.height * t.pixels,
                   MAGENTA);
 }
 
-void DrawMap(tiles t) {
-    for(int z = 0; z < 20; z++)
-    {
+void DrawMap(tiles t, int currentMin, int currentMax) {
+    for (int z = 0; z < 20; z++) {
         for (int i = currentMin; i < currentMax; i++) {
             if (bigmap[i] == 396) {
                 DrawRectangle((i - currentMin) * t.pixels, z * t.pixels, t.width * t.pixels,
@@ -71,6 +68,47 @@ void DrawMap(tiles t) {
         }
         currentMin += 30;
         currentMax += 30;
+    }
+}
+
+void playermove(tiles &t) {
+
+
+    if (IsKeyPressed(KEY_W)) {
+        t.y -= 1;
+        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
+            t.y += 1;
+        }
+    }
+    if (IsKeyPressed(KEY_A)) {
+        t.x -= 1;
+        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
+            t.x += 1;
+        }
+    }
+    if (IsKeyPressed(KEY_S)) {
+        t.y += 1;
+        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
+            t.y -= 1;
+        }
+    }
+    if (IsKeyPressed(KEY_D)) {
+        t.x += 1;
+        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
+            t.x -= 1;
+        }
+    }
+    if (t.x > 30) {
+        t.x -= 1;
+    }
+    if (t.x < 1) {
+        t.x += 1;
+    }
+    if (t.y > 20) {
+        t.y -= 1;
+    }
+    if (t.y < 1) {
+        t.y += 1;
     }
 }
 
@@ -90,9 +128,15 @@ int main() {
     // ...
     // ...
     Texture2D map = LoadTexture("assets/graphics/test5.png");
-    currentMin = 0;
-    currentMax = 30;
+    int currentMin = 0;
+    int currentMax = 30;
 
+    tiles tile;
+    tile.x = 1;
+    tile.y = 1;
+    tile.height = 1;
+    tile.width = 1;
+    tile.pixels = 32;
 
     tiles player;
     player.x = 1;
@@ -101,59 +145,15 @@ int main() {
     player.width = 1;
     player.pixels = 32;
 
-    tiles wall;
-    wall.x = 5;
-    wall.y = 2;
-    wall.height = 1;
-    wall.width = 1;
-    wall.pixels = 32;
-
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Updates that are made by frame are coded here
         // ...
         // ...
-
         currentMin = 0;
         currentMax = 30;
-
-        if (IsKeyPressed(KEY_W)) {
-            player.y -= 1;
-            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
-                player.y += 1;
-            }
-        }
-        if (IsKeyPressed(KEY_A)) {
-            player.x -= 1;
-            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
-                player.x += 1;
-            }
-        }
-        if (IsKeyPressed(KEY_S)) {
-            player.y += 1;
-            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
-                player.y -= 1;
-            }
-        }
-        if (IsKeyPressed(KEY_D)) {
-            player.x += 1;
-            if (CheckCollisionRecs(GetRect(player), GetRect(wall))) {
-                player.x -= 1;
-            }
-        }
-        if (player.x > 30) {
-            player.x -= 1;
-        }
-        if (player.x < 1) {
-            player.x += 1;
-        }
-        if (player.y > 20) {
-            player.y -= 1;
-        }
-        if (player.y < 1) {
-            player.y += 1;
-        }
+        playermove(player);
 
         BeginDrawing();
         // You can draw on the screen between BeginDrawing() and EndDrawing()
@@ -161,9 +161,8 @@ int main() {
         // ...
         ClearBackground(WHITE);
         DrawTexture(map, 0, 0, WHITE);
-        //wall.Draw();
-        DrawMap(wall);
-        Draw(player);
+        DrawMap(tile, currentMin, currentMax);
+        DrawPlayer(player);
         EndDrawing();
     } // Main game loop end
 
