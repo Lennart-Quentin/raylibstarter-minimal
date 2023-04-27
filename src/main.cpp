@@ -52,13 +52,15 @@ Rectangle GetRect(tiles t) {
     return Rectangle{(t.x - 1) * t.pixels, (t.y - 1) * t.pixels, t.width * t.pixels, t.height * t.pixels};
 }
 
-void DrawPlayer(tiles &t) {
+void DrawPlayer(tiles t) {
     DrawRectangle((int) (t.x - 1) * t.pixels, (int) (t.y - 1) * t.pixels, (int) t.width * t.pixels,
                   (int) t.height * t.pixels,
                   MAGENTA);
 }
 
-void DrawMap(tiles t, int currentMin, int currentMax) {
+void DrawMap(tiles t) {
+    int currentMin = 0;
+    int currentMax = 30;
     for (int z = 0; z < 20; z++) {
         for (int i = currentMin; i < currentMax; i++) {
             if (bigmap[i] == 396) {
@@ -71,44 +73,68 @@ void DrawMap(tiles t, int currentMin, int currentMax) {
     }
 }
 
-void playermove(tiles &t) {
+bool Coll(tiles c) {
+    bool collision;
+    if (bigmap[c.pos] == 396) {
+        collision = true;
+    } else if (bigmap[c.pos] == 520) {
+        collision = true;
+    } else {
+        collision = false;
+    }
+    return collision;
+}
 
 
+void playermove(tiles &player, tiles &tile) {
     if (IsKeyPressed(KEY_W)) {
-        t.y -= 1;
-        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
-            t.y += 1;
+        player.y -= 1;
+        player.pos -= 30;
+        if (Coll(player)) {
+            player.y += 1;
+            player.pos += 30;
         }
     }
     if (IsKeyPressed(KEY_A)) {
-        t.x -= 1;
-        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
-            t.x += 1;
+        player.x -= 1;
+        player.pos -= 1;
+        if (Coll(player)) {
+            player.x += 1;
+            player.pos += 1;
         }
     }
     if (IsKeyPressed(KEY_S)) {
-        t.y += 1;
-        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
-            t.y -= 1;
+        player.y += 1;
+        player.pos += 30;
+        if (Coll(player)) {
+            player.y -= 1;
+            player.pos -= 30;
         }
     }
     if (IsKeyPressed(KEY_D)) {
-        t.x += 1;
-        if (CheckCollisionRecs(GetRect(t), GetRect(t))) {
-            t.x -= 1;
+        player.x += 1;
+        player.pos += 1;
+        if (Coll(player)) {
+            player.x -= 1;
+            player.pos -= 1;
         }
     }
-    if (t.x > 30) {
-        t.x -= 1;
+    if (player.x > 30) {
+        player.x -= 1;
+        player.pos -= 1;
+
     }
-    if (t.x < 1) {
-        t.x += 1;
+    if (player.x < 1) {
+        player.x += 1;
+        player.pos += 1;
     }
-    if (t.y > 20) {
-        t.y -= 1;
+    if (player.y > 20) {
+        player.y -= 1;
+        player.pos -= 30;
     }
-    if (t.y < 1) {
-        t.y += 1;
+    if (player.y < 1) {
+        player.y += 1;
+        player.pos += 30;
     }
 }
 
@@ -128,8 +154,7 @@ int main() {
     // ...
     // ...
     Texture2D map = LoadTexture("assets/graphics/test5.png");
-    int currentMin = 0;
-    int currentMax = 30;
+
 
     tiles tile;
     tile.x = 1;
@@ -144,6 +169,7 @@ int main() {
     player.height = 1;
     player.width = 1;
     player.pixels = 32;
+    player.pos = 0;
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -151,9 +177,7 @@ int main() {
         // Updates that are made by frame are coded here
         // ...
         // ...
-        currentMin = 0;
-        currentMax = 30;
-        playermove(player);
+        playermove(player, tile);
 
         BeginDrawing();
         // You can draw on the screen between BeginDrawing() and EndDrawing()
@@ -161,8 +185,9 @@ int main() {
         // ...
         ClearBackground(WHITE);
         DrawTexture(map, 0, 0, WHITE);
-        DrawMap(tile, currentMin, currentMax);
+        DrawMap(tile);
         DrawPlayer(player);
+
         EndDrawing();
     } // Main game loop end
 

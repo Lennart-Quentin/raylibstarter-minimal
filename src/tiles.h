@@ -9,6 +9,7 @@ struct tiles {
     float height;
     float width;
     int pixels;
+    int pos;
 
 };
 
