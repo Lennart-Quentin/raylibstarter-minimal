@@ -4,7 +4,8 @@
 
 #pragma once
 
-struct tiles {
+class tiles {
+public:
     float x, y;
     float height;
     float width;

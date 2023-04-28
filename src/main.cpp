@@ -48,10 +48,6 @@ int bigmap[600] = {37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 3
                    37, 37, 37, 37, 37, 37};
 
 
-Rectangle GetRect(tiles t) {
-    return Rectangle{(t.x - 1) * t.pixels, (t.y - 1) * t.pixels, t.width * t.pixels, t.height * t.pixels};
-}
-
 void DrawPlayer(tiles t) {
     DrawRectangle((int) (t.x - 1) * t.pixels, (int) (t.y - 1) * t.pixels, (int) t.width * t.pixels,
                   (int) t.height * t.pixels,
